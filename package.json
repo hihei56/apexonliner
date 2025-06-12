@@ -7,8 +7,8 @@
     "start": "node apexrpc.js"
   },
   "dependencies": {
-    "discord.js-selfbot-v13": "^3.x.x",
-    "discord.js-selfbot-rpc": "^1.x.x",
-    "dotenv": "^16.x.x"
+    "discord.js-selfbot-rpc": "^1.0.1",
+    "discord.js-selfbot-v13": "^3.6.1",
+    "dotenv": "^16.5.0"
   }
 }
