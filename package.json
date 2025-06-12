@@ -1,0 +1,14 @@
+{
+  "name": "apex-rpc",
+  "version": "1.0.0",
+  "description": "Apex Legends Rich Presence Bot",
+  "main": "apexrpc.js",
+  "scripts": {
+    "start": "node apexrpc.js"
+  },
+  "dependencies": {
+    "discord.js-selfbot-v13": "^3.x.x",
+    "discord.js-selfbot-rpc": "^1.x.x",
+    "dotenv": "^16.x.x"
+  }
+}
