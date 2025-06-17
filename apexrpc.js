@@ -3,7 +3,7 @@ const { Client } = require('discord.js-selfbot-v13');
 const { RichPresence, Util } = require('discord.js-selfbot-rpc');
 const http = require('http');
 
-const client = new Client();
+const client = new Client({ checkUpdate: false });
 
 // ヘルスチェック用HTTPサーバー
 const server = http.createServer((req, res) => {
@@ -17,8 +17,8 @@ client.on('ready', async () => {
   console.log(`ログイン成功: ${client.user.tag}`);
 
   const applicationId = '1170557910988886046';
-
   let largeImage;
+
   try {
     largeImage = await Util.getAssets(applicationId, 'apex');
   } catch (error) {
@@ -44,14 +44,28 @@ client.on('ready', async () => {
 // プロセスを維持するためのハートビート
 setInterval(() => {
   console.log('ボットは動作中です...');
-}, 30000); // 30秒ごとにログ出力
+}, 60000); // 60秒に変更
 
 client.on('error', (error) => {
   console.error('クライアントエラー:', error);
+  process.exit(1);
 });
 
 client.on('rateLimit', (info) => {
   console.warn('レート制限:', info);
 });
 
-client.login(process.env.DISCORD_TOKEN);
+// SIGTERMハンドリング
+process.on('SIGTERM', () => {
+  console.log('SIGTERM シグナルを受信。プロセスを終了します...');
+  client.destroy();
+  server.close(() => {
+    console.log('ヘルスチェックサーバーを終了しました');
+    process.exit(0);
+  });
+});
+
+client.login(process.env.DISCORD_TOKEN).catch((error) => {
+  console.error('ログインエラー:', error);
+  process.exit(1);
+});
