@@ -5,7 +5,7 @@ const http = require('http');
 
 const client = new Client();
 
-// 簡易HTTPサーバーを追加（ヘルスチェック用）
+// ヘルスチェック用HTTPサーバー
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end('OK');
@@ -40,5 +40,10 @@ client.on('ready', async () => {
   client.user.setPresence(presence.toData());
   console.log('リッチプレゼンスを設定しました！');
 });
+
+// プロセスを維持するためのハートビート
+setInterval(() => {
+  console.log('ボットは動作中です...');
+}, 60000);
 
 client.login(process.env.DISCORD_TOKEN);
