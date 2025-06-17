@@ -5,12 +5,12 @@ const http = require('http');
 
 const client = new Client({ checkUpdate: false });
 
-// ヘルスチェック用HTTPサーバー
+// Health check HTTP server
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end('OK');
-}).listen(process.env.PORT || 8000, () => {
-  console.log(`ヘルスチェックサーバーがポート ${process.env.PORT || 8000} で起動しました`);
+}).listen(process.env.PORT || 10000, () => {
+  console.log(`ヘルスチェックサーバーがポート ${process.env.PORT || 10000} で起動しました`);
 });
 
 client.on('ready', async () => {
@@ -41,10 +41,10 @@ client.on('ready', async () => {
   console.log('リッチプレゼンスを設定しました！');
 });
 
-// プロセスを維持するためのハートビート
+// Heartbeat to keep the process alive
 setInterval(() => {
   console.log('ボットは動作中です...');
-}, 60000); // 60秒に変更
+}, 60000); // 60 seconds
 
 client.on('error', (error) => {
   console.error('クライアントエラー:', error);
@@ -55,17 +55,32 @@ client.on('rateLimit', (info) => {
   console.warn('レート制限:', info);
 });
 
-// SIGTERMハンドリング
+// Graceful shutdown for SIGTERM
 process.on('SIGTERM', () => {
   console.log('SIGTERM シグナルを受信。プロセスを終了します...');
-  client.destroy();
-  server.close(() => {
+  client.destroy().catch((err) => console.error('クライアント終了エラー:', err));
+  server.close((err) => {
+    if (err) console.error('サーバー終了エラー:', err);
     console.log('ヘルスチェックサーバーを終了しました');
     process.exit(0);
   });
 });
 
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('未処理の例外:', error);
+  process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('未処理のPromise拒否:', reason);
+});
+
+// Login to Discord
 client.login(process.env.DISCORD_TOKEN).catch((error) => {
   console.error('ログインエラー:', error);
+  process.exit(1);
+});
   process.exit(1);
 });
