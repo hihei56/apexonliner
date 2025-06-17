@@ -44,6 +44,14 @@ client.on('ready', async () => {
 // プロセスを維持するためのハートビート
 setInterval(() => {
   console.log('ボットは動作中です...');
-}, 60000); // 1分ごとにログ出力
+}, 30000); // 30秒ごとにログ出力
+
+client.on('error', (error) => {
+  console.error('クライアントエラー:', error);
+});
+
+client.on('rateLimit', (info) => {
+  console.warn('レート制限:', info);
+});
 
 client.login(process.env.DISCORD_TOKEN);
