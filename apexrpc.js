@@ -1,8 +1,17 @@
 require('dotenv').config();
 const { Client } = require('discord.js-selfbot-v13');
 const { RichPresence, Util } = require('discord.js-selfbot-rpc');
+const http = require('http');
 
 const client = new Client();
+
+// 簡易HTTPサーバーを追加（ヘルスチェック用）
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('OK');
+}).listen(process.env.PORT || 8000, () => {
+  console.log(`ヘルスチェックサーバーがポート ${process.env.PORT || 8000} で起動しました`);
+});
 
 client.on('ready', async () => {
   console.log(`ログイン成功: ${client.user.tag}`);
