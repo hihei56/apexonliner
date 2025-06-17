@@ -44,6 +44,6 @@ client.on('ready', async () => {
 // プロセスを維持するためのハートビート
 setInterval(() => {
   console.log('ボットは動作中です...');
-}, 60000);
+}, 60000); // 1分ごとにログ出力
 
 client.login(process.env.DISCORD_TOKEN);
