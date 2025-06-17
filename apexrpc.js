@@ -5,7 +5,7 @@ const http = require('http');
 
 const client = new Client({ checkUpdate: false });
 
-// Health check HTTP server
+// ヘルスチェック用HTTPサーバー
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end('OK');
@@ -41,10 +41,10 @@ client.on('ready', async () => {
   console.log('リッチプレゼンスを設定しました！');
 });
 
-// Heartbeat to keep the process alive
+// プロセスを維持するためのハートビート
 setInterval(() => {
   console.log('ボットは動作中です...');
-}, 60000); // 60 seconds
+}, 60000); // 60秒
 
 client.on('error', (error) => {
   console.error('クライアントエラー:', error);
@@ -55,7 +55,7 @@ client.on('rateLimit', (info) => {
   console.warn('レート制限:', info);
 });
 
-// Graceful shutdown for SIGTERM
+// SIGTERMの適切な処理
 process.on('SIGTERM', () => {
   console.log('SIGTERM シグナルを受信。プロセスを終了します...');
   client.destroy().catch((err) => console.error('クライアント終了エラー:', err));
@@ -66,21 +66,19 @@ process.on('SIGTERM', () => {
   });
 });
 
-// Handle uncaught exceptions
+// 未処理の例外をキャッチ
 process.on('uncaughtException', (error) => {
   console.error('未処理の例外:', error);
   process.exit(1);
 });
 
-// Handle unhandled promise rejections
+// 未処理のPromise拒否をキャッチ
 process.on('unhandledRejection', (reason, promise) => {
   console.error('未処理のPromise拒否:', reason);
 });
 
-// Login to Discord
+// Discordにログイン
 client.login(process.env.DISCORD_TOKEN).catch((error) => {
   console.error('ログインエラー:', error);
-  process.exit(1);
-});
   process.exit(1);
 });
